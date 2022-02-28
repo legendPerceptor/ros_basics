@@ -1,0 +1,8 @@
+<launch>
+    <param name="/number_publish_frequency" type="double" value="3.0" />
+    <param name="/msg_to_publish" type="string" value="No way to win" />
+
+    <node name="number_publisher" pkg="tutorial" type="cpp_publisher" />
+    <node name="number_counter" pkg="tutorial" type="first_subscriber.py" />
+
+</launch>
