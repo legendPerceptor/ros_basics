@@ -3,8 +3,8 @@ import copy
 import rospy
 import threading
 from picar_joy_stick.msg import PicarJoy
-from picar_joy_stick import Picar
-from picar_joy_stick import PicarJoyMessages
+from picar_wrapper import Picar
+from picar_joy import PicarJoyMessages
 
 class PicarRobot(object):
     def __init__(self):
@@ -20,7 +20,7 @@ class PicarRobot(object):
 
     def joy_control_cb(self, msg):
         with self.joy_mutex:
-            self.joy_msg = copy.deepcopy(self.msg)
+            self.joy_msg = copy.deepcopy(msg)
         
     def controller(self):
 
@@ -33,16 +33,20 @@ class PicarRobot(object):
                 self.angle = 135
             if self.angle < 45:
                 self.angle = 45
-            self.picar.turn(self.angle)
+            # if self.angle > 90:
+            #     self.picar.turn_right()
+            # else:
+            #     self.picar.turn_left()
+            self.picar.turn(int(self.angle))
         else:
             self.picar.turn_straight()
             self.angle = 90
         
         if msg.speed_cmd != 0:
             if (msg.speed_cmd == PicarJoyMessages.MOVE_FORWARD):
-                self.picar.move_forward(msg.speed)
-            elif (msg.tilt_cmd == PicarJoyMessages.MOVE_BACKWARD):
-                self.picar.move_backward(msg.speed)
+                self.picar.move_forward(int(msg.speed))
+            elif (msg.speed_cmd == PicarJoyMessages.MOVE_BACKWARD):
+                self.picar.move_backward(int(msg.speed))
         else:
             self.picar.stop()
 

@@ -34,5 +34,5 @@ class Picar():
     
     def stop(self):
         self.bw.stop()
-        self.fw.turn_straight()
+        # self.fw.turn_straight()
     

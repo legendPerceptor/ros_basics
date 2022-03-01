@@ -1,30 +1,30 @@
 #!/usr/bin/env python3
 
 import rospy
-from sensor_msgs import Joy
+from sensor_msgs.msg import Joy
 from picar_joy_stick.msg import PicarJoy
-from enum import Enum
+# from enum import Enum
 
-class PicarJoyMessages(Enum):
+class PicarJoyMessages():
     MOVE_FORWARD = 1
     MOVE_BACKWARD = 2
 
-cntlr = dict()
+
 controller_type = 'ps4'
 
 
 ps4 = {
-    "SPEED": 2,
+    "SPEED": 4,
     "PAN": 3
 }
-
+cntlr = ps4
 
 class JoyStateControl:
     def __init__(self):
-        self.threshold = 0.01
+        self.threshold = rospy.get_param("~threshold")
         self.prev_joy_cmd = PicarJoy()
-        self.pub_joy_cmd = rospy.Publisher("picar_commands/joyprocessed", queue_size=10)
-        self.sub_joy_raw = rospy.Subscriber("picar_commands/joy_raw", 10, self.joy_state_cb)
+        self.pub_joy_cmd = rospy.Publisher("picar_commands/joy_processed", PicarJoy, queue_size=10)
+        self.sub_joy_raw = rospy.Subscriber("picar_commands/joy_raw", Joy, self.joy_state_cb)
 
     def joy_state_cb(self, msg):
         joy_cmd = PicarJoy()
@@ -46,9 +46,10 @@ class JoyStateControl:
 
 def main():
     rospy.init_node("picar_joy_control")
-    controller_type = rospy.get_param("/controller")
-    if(controller_type=='ps4'):
-        cntlr = ps4
+    controller_type = rospy.get_param("~controller")
+    # if(controller_type=='ps4'):
+    print("The controller type is", controller_type)
+    # cntlr = ps4
     joyState = JoyStateControl()
     rospy.spin()
     

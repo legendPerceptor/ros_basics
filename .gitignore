@@ -1,4 +1,5 @@
 build/
 devel/
 **/.vscode/**
-
+**/__pycache__/**
+src/joystick_drivers/
